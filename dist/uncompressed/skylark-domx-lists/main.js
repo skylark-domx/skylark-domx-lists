@@ -1,3 +1,6 @@
-define([],function(){
-	
+define([
+	"./lists",
+	"./multitier"
+],function(lists){
+	return lists;
 });

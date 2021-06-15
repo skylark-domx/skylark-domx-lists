@@ -5,5 +5,5 @@
  * @link www.skylarkjs.org
  * @license MIT
  */
-define([],function(){});
+define(["./lists","./multitier"],function(i){return i});
 //# sourceMappingURL=sourcemaps/main.js.map

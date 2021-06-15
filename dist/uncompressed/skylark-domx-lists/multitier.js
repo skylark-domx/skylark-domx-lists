@@ -1,5 +1,5 @@
 define([
-	"skylark-langx-langx",
+	"skylark-langx",
 	"skylark-domx-query",
 	"./lists"
 ],function(langx,$,lists){
@@ -35,7 +35,7 @@ define([
 			toggle : function($el) {
 				$el.toggle();
 			}
-		},options);
+		},options,true);
 
     var itemSelector = options.selectors.item,
         $items = $(itemSelector,elm),
@@ -64,11 +64,15 @@ define([
           if (!multiExpand) {
               ///langx.scall($(this).closest(itemSelector).siblings().removeClass("active").children(sublistSelector+".in").plugin("domx.toggles.collapse"),"hide");
               $clildren = $(this).closest(itemSelector).siblings().removeClass(activeClass).children(sublistSelector+"."+options.classes.in);
-              hide($children);
+              if ($children) {
+	              hide($children);
+              }
           }
           //$(this).closest(itemSelector).toggleClass(activeClass).children(sublistSelector).plugin("domx.toggles.collapse").toggle();
           $children = $(this).closest(itemSelector).toggleClass(activeClass).children(options.selectors.sublist);
-          toggle($children);
+          if ($children) {
+	          toggle($children);
+	      }
       });
 
       $items.filter(activeSelector).has(sublistSelector).children(sublistSelector).addClass(collapseClass).addClass(inClass);
