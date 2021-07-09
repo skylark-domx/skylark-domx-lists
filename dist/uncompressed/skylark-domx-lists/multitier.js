@@ -18,7 +18,7 @@ define([
 				item : "li",                   // ".list-group-item"
 				sublist : "ul",  // "> .list-group"
 				hasSublist : ":has(ul)",
-				toggler : " > a"
+				handler : " > a"
 			},
 
 
@@ -56,7 +56,7 @@ define([
         sublistSelector = options.selectors.sublist,  
         togglable = options.togglable,   
         multiExpand = options.multiExpand,
-        togglerSelector = options.selectors.toggler,
+        handlerSelector = options.selectors.handler,
 
         collapseClass = options.classes.collapse,
         inClass = options.classes.in,
@@ -77,7 +77,7 @@ define([
 			}
         };
 
-     $items.find(togglerSelector).on("click.multitier", function(e) {
+     $items.find(handlerSelector).on("click.multitier", function(e) {
           e.preventDefault();
 
           let $children,
