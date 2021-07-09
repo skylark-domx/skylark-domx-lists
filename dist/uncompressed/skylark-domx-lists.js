@@ -102,8 +102,11 @@ define('skylark-domx-lists/multitier',[
 	"skylark-domx-query",
 	"./lists"
 ],function(langx,$,lists){
+  'use strict'
+
 	function multitier(elm,options) {
 		options = langx.mixin({
+
 			classes : {
 				active : "active",
 				collapse : "collapse",
@@ -117,23 +120,28 @@ define('skylark-domx-lists/multitier',[
 				toggler : " > a"
 			},
 
+
 			mode   : "",  // "tree" or "accordion" or "popover"
 
 			levels : 2,
 
+			togglable : false,
 			multiExpand : false,
 
+			/*
 			show : function($el) {
 				$el.show();
 			},
 
 			hide : function($el) {
-				$el.hide();
+				//$el.hide();
+				$el.add
 			},
 
 			toggle : function($el) {
 				$el.toggle();
 			}
+			*/
 		},options,true);
 
     var itemSelector = options.selectors.item,
@@ -144,7 +152,8 @@ define('skylark-domx-lists/multitier',[
 
 		multitierMode = options.mode,
 
-        sublistSelector = options.selectors.sublist;           
+        sublistSelector = options.selectors.sublist,  
+        togglable = options.togglable,   
         multiExpand = options.multiExpand,
         togglerSelector = options.selectors.toggler,
 
@@ -152,30 +161,53 @@ define('skylark-domx-lists/multitier',[
         inClass = options.classes.in,
         inSelector = "." + inClass,
 
-        hide = options.hide,
-        toggle = options.toggle;
+        show = options.show || function($el) {
+        	$el.addClass(inClass);
+        },
+        hide = options.hide || function($el) {
+        	$el.addClass(collapseClass).removeClass(inClass);
 
-     $items.has(sublistSelector).find(togglerSelector).on("click.multitier", function(e) {
+        },
+        toggle = options.toggle || function($el) {
+			if ($el.hasClass(inClass)) {
+				hide($el);
+			} else {
+				show($el);
+			}
+        };
+
+     $items.find(togglerSelector).on("click.multitier", function(e) {
           e.preventDefault();
 
-          let $children;
+          let $children,
+          	  $clickedItem =  $(this).closest(itemSelector);
 
           if (!multiExpand) {
               ///langx.scall($(this).closest(itemSelector).siblings().removeClass("active").children(sublistSelector+".in").plugin("domx.toggles.collapse"),"hide");
-              $clildren = $(this).closest(itemSelector).siblings().removeClass(activeClass).children(sublistSelector+"."+options.classes.in);
+              //$clildren = $(this).closest(itemSelector).siblings().removeClass(activeClass).children(sublistSelector+"."+options.classes.in);
+              $children = $clickedItem.siblings().removeClass(activeClass).children(sublistSelector);
               if ($children) {
 	              hide($children);
               }
           }
           //$(this).closest(itemSelector).toggleClass(activeClass).children(sublistSelector).plugin("domx.toggles.collapse").toggle();
-          $children = $(this).closest(itemSelector).toggleClass(activeClass).children(options.selectors.sublist);
-          if ($children) {
-	          toggle($children);
-	      }
+          let isActiveItem = $clickedItem.hasClass(activeClass);
+          if (!isActiveItem || togglable) {
+	          $children = $clickedItem.children(options.selectors.sublist);
+	          if (isActiveItem) {
+				$clickedItem.removeClass(activeClass);
+				hide($children)  	
+	          } else {
+				$clickedItem.addClass(activeClass);
+				show($children)  	
+	          }
+
+          }
       });
 
-      $items.filter(activeSelector).has(sublistSelector).children(sublistSelector).addClass(collapseClass).addClass(inClass);
-      $items.not(activeSelector).has(sublistSelector).children(sublistSelector).addClass(collapseClass);
+      hide($items.has(sublistSelector).children(sublistSelector));
+
+      show($items.filter(activeSelector).has(sublistSelector).children(sublistSelector))
 
 
 	}
